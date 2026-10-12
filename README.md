@@ -17,6 +17,8 @@ The `stable` branch advances after CLIProxyAPI's image build, smoke test, retry 
 
 If you already installed CLIProxyAPI, keep `https://github.com/Diabl0570/home-assistant-app-cliproxyapi#stable` in your Home Assistant repositories. GitHub redirects that URL to this repository after the rename. Keeping the configured URL preserves Home Assistant's app identity, options, and private data, so you can update the existing installation in place. Back up the app before updating. Adding the new URL alongside the old one creates a separate app with separate private data.
 
+See the [collection migration record](docs/collection-migration.md) for source revisions, verification, and recovery.
+
 ## Configure CLIProxyAPI
 
 Set `api_keys` to one or more random client keys. Set `management_password` to a different random password of at least 24 characters. The defaults cannot start.
