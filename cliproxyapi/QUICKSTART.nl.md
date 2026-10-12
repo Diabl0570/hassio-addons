@@ -2,7 +2,7 @@
 
 Deze Home Assistant-app draait de proxy op je eigen amd64-apparaat. De AI-modellen blijven bij je provider draaien.
 
-1. Voeg na publicatie `https://github.com/Diabl0570/home-assistant-app-cliproxyapi#stable` toe bij **Instellingen → Apps → Appstore → ⋮ → Repositories**.
+1. Voeg na publicatie `https://github.com/Diabl0570/hassio-addons#stable` toe bij **Instellingen → Apps → Appstore → ⋮ → Repositories**.
 2. Installeer **CLIProxyAPI**.
 3. Vul bij Configuratie minstens één `api_keys` in. Dit is de sleutel voor clients, niet je provider-account.
 4. Kies een andere, willekeurige `management_password` van minstens 24 tekens. Genereer bijvoorbeeld twee verschillende waarden met `openssl rand -hex 32`.

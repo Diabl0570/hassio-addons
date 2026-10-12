@@ -1,3 +1,9 @@
+# 8.0.10-4
+
+- Move the app into the shared `Diabl0570/hassio-addons` repository with Obot MCP Gateway.
+- Keep the existing public image package and CLIProxyAPI 8.0.10 runtime.
+- Require Obot verification before publishing the CLIProxyAPI image and advancing the shared `stable` branch.
+
 # 8.0.10-3
 
 - Add the `retry_before_output` app option using CLIProxyAPI's native retry settings. See [Retries before output](DOCS.md#retries-before-output) for defaults, fixed class waits, limits and off-switch behaviour.

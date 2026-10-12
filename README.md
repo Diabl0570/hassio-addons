@@ -1,50 +1,67 @@
-# CLIProxyAPI for Home Assistant app (add-on)
+# Home Assistant apps
 
-Run [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI) on your Home Assistant OS device. Community app for **amd64**, including bare-metal x86-64 systems; not an official Home Assistant or CLIProxyAPI project.
+This repository contains Kasper's Home Assistant apps for amd64 Home Assistant OS and Supervised installations.
 
-The public repository and container image are published under `Diabl0570`. Use the `stable` branch below to install releases that passed the container build, smoke test and [retry check](cliproxyapi/DOCS.md#retries-before-output).
+| App | Purpose | Documentation |
+| --- | --- | --- |
+| CLIProxyAPI | OpenAI-compatible proxy with CPA Manager Plus and optional request diagnostics. | [English documentation](cliproxyapi/DOCS.md), [Nederlandse snelstart](cliproxyapi/QUICKSTART.nl.md) |
+| Obot MCP Gateway | Authenticated MCP gateway with skills attached to selected tool descriptions. | [App setup](obot/DOCS.md), [tool-skill guide](tool-skills/README.md) |
 
-## Install
+## Install an app
 
-1. In Home Assistant open **Settings → Apps → App store → ⋮ → Repositories** (older versions call these Add-ons).
-2. Add `https://github.com/Diabl0570/home-assistant-app-cliproxyapi#stable`.
-3. Install **CLIProxyAPI**. Set `api_keys` to one or more random client keys and `management_password` to a different random password of at least 24 characters. Defaults intentionally cannot start.
-4. Start the app and enable **Start on boot**. Open **Web UI** to manage providers in the bundled [CPA Manager Plus](https://github.com/seakee/CPA-Manager-Plus) panel; log in with the management password. The stock panel stays at `http://HOME_ASSISTANT_IP:8317/management.html`.
-5. Use `http://HOME_ASSISTANT_IP:8317/v1` and a client API key in compatible clients.
+1. In Home Assistant, open **Settings → Apps → App store → ⋮ → Repositories**. Older versions call apps add-ons.
+2. Add `https://github.com/Diabl0570/hassio-addons#stable`.
+3. Install the app you need and follow its documentation.
 
-[English documentation](cliproxyapi/DOCS.md) · [Nederlandse snelstart](cliproxyapi/QUICKSTART.nl.md)
+The `stable` branch advances after CLIProxyAPI's image build, smoke test, retry check, anonymous image-pull check, and Obot's startup and persistence check pass. Obot builds its wrapper locally from the pinned official image. CLIProxyAPI uses its existing public GHCR package.
 
-## Updates
+If you already installed CLIProxyAPI, keep `https://github.com/Diabl0570/home-assistant-app-cliproxyapi#stable` in your Home Assistant repositories. GitHub redirects that URL to this repository after the rename. Keeping the configured URL preserves Home Assistant's app identity, options, and private data, so you can update the existing installation in place. Back up the app before updating. Adding the new URL alongside the old one creates a separate app with separate private data.
 
-A daily workflow proposes stable CLIProxyAPI v8 and CPA Manager Plus v1 updates in separate pull requests. Release asset, checksum, app version and changelog change together. The updater explicitly dispatches the build workflow for its PR branch, because GitHub suppresses ordinary PR triggers created with `GITHUB_TOKEN`. Review the successful build before merging. New major upstream versions, and CPA Manager Plus releases marked breaking or needing migration or a newer CLIProxyAPI, require a manual compatibility review. A successful main build publishes the versioned amd64 image to GHCR. Only after an anonymous image-pull check passes does the workflow advance the `stable` installation branch. Home Assistant detects the changed app version and offers **Update** after refreshing the store; users do not have to rebuild upstream themselves.
+## Configure CLIProxyAPI
 
-For the optional read-only endpoint, see [Diagnostics](cliproxyapi/DOCS.md#diagnostics) for enablement and [Updates and diagnostics compatibility](cliproxyapi/DOCS.md#updates-and-diagnostics-compatibility) for the upstream-update and compatibility-check contract.
+Set `api_keys` to one or more random client keys. Set `management_password` to a different random password of at least 24 characters. The defaults cannot start.
 
-Inspired by the app structure and update approach of [alexbelgium/hassio-addons](https://github.com/alexbelgium/hassio-addons). Implementation is a small standalone wrapper, without copying its scripts.
+Open **Web UI** to manage provider accounts in CPA Manager Plus. Clients use `http://HOME_ASSISTANT_IP:8317/v1` with a client API key. See [CLIProxyAPI documentation](cliproxyapi/DOCS.md) for routing, retries, model exclusions, and diagnostics.
 
-## Maintainer setup
+## Configure Obot and a Jira skill
 
-Publish this directory as a public repository under your personal account, then enable GitHub Actions. In repository Settings → Actions → General enable **Allow GitHub Actions to create and approve pull requests**. After the first successful main build, make the GHCR package **public** in package settings; public repository visibility does not guarantee public package visibility. Rerun the main build after making the package public: its anonymous pull check gates creation of the `stable` installation branch. The Home Assistant install requires anonymous image pull access.
+Set `server_url` to the HTTP or HTTPS origin that your agents can reach. Disable **Protection mode** for Obot, start the app, and use the initial bootstrap token to configure normal authentication.
 
-Example publication from this directory, after creating a main commit:
+Obot has access to the Docker daemon that runs Home Assistant and its apps. Keep the gateway on your private network and give administration access only to people you trust with that host. Obot's documented baseline is two CPU cores, 4 GB available RAM, and 10 GB storage.
+
+The [starter Jira skill](skills/jira-write-ticket/SKILL.md) binds to `createJiraIssue` and `editJiraIssue` through the [binding registry](tool-skills/bindings.json). Follow the [tool-skill guide](tool-skills/README.md) to render and apply the descriptions in Obot.
+
+Tool descriptions provide instructions before a call. Use an Obot request filter for rules that must reject a write. Changing the skill requires rendering and applying the descriptions again. The app does not synchronize them automatically.
+
+## Maintain app releases
+
+The daily updater proposes CLIProxyAPI v8 and CPA Manager Plus v1 updates in separate pull requests. It explicitly dispatches `build.yaml` for each update branch. Review the build before merging. New major releases and incompatible CPA Manager Plus releases require a manual review.
+
+CLIProxyAPI image tags are immutable. Bump the app version suffix when its app folder changes. Changes confined to Obot, shared skills, or collection documentation reuse the existing CLIProxyAPI image after its source tree and container checks pass. The image name remains `ghcr.io/diabl0570/home-assistant-app-cliproxyapi-amd64` so existing installations can keep using the same public package. Obot's upstream and wrapper versions remain pinned in its manifest and Dockerfile.
+
+The separate diagnostics compatibility job reports whether the pinned CPA Manager Plus interface still works. It does not block image publication. Diagnostics stays separate from the proxy at runtime. See [the compatibility contract](cliproxyapi/DOCS.md#updates-and-diagnostics-compatibility).
+
+## Run local checks
 
 ```sh
-gh repo create Diabl0570/home-assistant-app-cliproxyapi --public --source=. --remote=origin --push
+python3 -m pip install PyYAML==6.0.3
+python3 -m unittest discover -s cliproxyapi/tests -v
+python3 -m unittest discover -s obot/tests -v
+python3 -m unittest discover -s tests -v
+bash -n obot/run.sh
 ```
 
-Published image tags are immutable: bump the app version wrapper suffix (for example `8.0.4-2`) for changes after a version is published. A rerun of the same commit can reuse its existing image, including after changing package visibility.
-
-The build uses Debian glibc and the CLIProxyAPI and CPA Manager Plus releases pinned, with their official SHA-256 checksums, in `cliproxyapi/updater.json` and `cliproxyapi/manager-plus.json`; these files are the authoritative upstream pins. Local verification:
+Container checks use disposable data and synthetic credentials. Run them on an amd64 Docker host:
 
 ```sh
-python3 -m pip install PyYAML==6.0.2
-python3 -m unittest discover -s cliproxyapi/tests -v
 docker build --build-arg BUILD_ARCH=amd64 -t ha-cliproxy-test cliproxyapi
-python3 scripts/smoke.py
+python3 scripts/cliproxyapi-smoke.py
 python3 scripts/retry_check.py
 python3 scripts/diagnostics_compat.py
+docker build --platform linux/amd64 --tag ha-obot:test obot
+python3 scripts/obot-smoke.py --image ha-obot:test
 ```
 
-The smoke test and the retry and diagnostics checks use no provider accounts. Actual Home Assistant installation and provider login still require testing on a Home Assistant device.
+These checks do not use your Home Assistant, Jira, or provider accounts. Test installation and account preservation on the target Home Assistant device after migration.
 
-MIT license applies to this wrapper. The container includes the CLIProxyAPI and CPA Manager Plus (MIT) release LICENSE files; upstream projects and the separately downloaded stock management panel retain their own licensing.
+The wrapper code and starter skill use the MIT license. Upstream images and bundled releases retain their own licenses and notices.
