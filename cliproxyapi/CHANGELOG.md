@@ -1,6 +1,12 @@
+# 8.0.10-5
+
+- Update CPA Manager Plus to 1.14.6; upstream checksum pinned.
+
 # 8.0.10-4
 
-- Update CPA Manager Plus to 1.14.5; upstream checksum pinned.
+- Move the app into the shared `Diabl0570/hassio-addons` repository with Obot MCP Gateway.
+- Keep the existing public image package and CLIProxyAPI 8.0.10 runtime.
+- Require Obot verification before publishing the CLIProxyAPI image and advancing the shared `stable` branch.
 
 # 8.0.10-3
 
