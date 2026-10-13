@@ -1,3 +1,7 @@
+# 8.0.27-1
+
+- Update CLIProxyAPI to 8.0.27; upstream checksum pinned.
+
 # 8.0.10-4
 
 - Move the app into the shared `Diabl0570/hassio-addons` repository with Obot MCP Gateway.

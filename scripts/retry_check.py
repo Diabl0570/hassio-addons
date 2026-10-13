@@ -74,6 +74,9 @@ class Provider(http.server.BaseHTTPRequestHandler):
             self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
             self.wfile.flush()
         if complete:
+            chunk = {"id": "chatcmpl-fake", "object": "chat.completion.chunk", "created": 0, "model": model,
+                     "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}]}
+            self.wfile.write(f"data: {json.dumps(chunk)}\n\n".encode())
             self.wfile.write(b"data: [DONE]\n\n")
         else:
             # The output has begun; the provider now fails, as a dropped connection.
