@@ -6,3 +6,6 @@ __pycache__/
 options.json
 cliproxy.yaml
 *.tar.gz
+.audit/
+.venv/
+.DS_Store

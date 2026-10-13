@@ -1,0 +1,26 @@
+name: Obot MCP Gateway
+version: "0.26.3-1"
+slug: obot
+url: https://github.com/Diabl0570/hassio-addons/tree/stable/obot
+description: Authenticated MCP gateway with tool description overrides and skills
+arch:
+  - amd64
+startup: application
+boot: manual
+init: false
+stage: experimental
+docker_api: true
+ingress: false
+backup: cold
+timeout: 30
+ports:
+  8080/tcp: 8180
+ports_description:
+  8080/tcp: Obot web interface and MCP endpoints
+webui: "http://[HOST]:[PORT:8080]"
+options:
+  server_url: null
+  bootstrap_token: ""
+schema:
+  server_url: url
+  bootstrap_token: password

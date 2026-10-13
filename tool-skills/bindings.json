@@ -1,0 +1,14 @@
+{
+  "note": "Confirm these exact tool names against the complete tools/list response from your upstream Jira MCP server before applying overrides.",
+  "bindings": [
+    {
+      "tools": [
+        "createJiraIssue",
+        "editJiraIssue"
+      ],
+      "skills": [
+        "../skills/jira-write-ticket/SKILL.md"
+      ]
+    }
+  ]
+}
