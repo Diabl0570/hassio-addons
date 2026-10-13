@@ -1,3 +1,8 @@
+# 8.0.27-2
+
+- Update CPA Manager Plus to 1.14.6; upstream checksum pinned.
+- CPA Manager Plus 1.14.6 can correct historical usage accounting. Keep a consistent database and archive backup before upgrading.
+
 # 8.0.27-1
 
 - Update CLIProxyAPI to 8.0.27; upstream checksum pinned.
