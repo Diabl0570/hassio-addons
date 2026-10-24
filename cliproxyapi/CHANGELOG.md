@@ -1,3 +1,7 @@
+# 8.0.41-1
+
+- Update CLIProxyAPI to 8.0.41; upstream checksum pinned.
+
 # 8.0.27-2
 
 - Update CPA Manager Plus to 1.14.6; upstream checksum pinned.
