@@ -6,6 +6,7 @@ This repository contains Kasper's Home Assistant apps for amd64 Home Assistant O
 | --- | --- | --- |
 | CLIProxyAPI | OpenAI-compatible proxy with CPA Manager Plus and optional request diagnostics. | [English documentation](cliproxyapi/DOCS.md), [Nederlandse snelstart](cliproxyapi/QUICKSTART.nl.md) |
 | Obot MCP Gateway | Authenticated MCP gateway with skills attached to selected tool descriptions. | [App setup](obot/DOCS.md), [tool-skill guide](tool-skills/README.md) |
+| MCPHub | One authenticated MCP endpoint with tool groups, per-agent keys, and tool access policies. | [App setup](mcphub/DOCS.md) |
 
 ## Install an app
 
@@ -13,7 +14,7 @@ This repository contains Kasper's Home Assistant apps for amd64 Home Assistant O
 2. Add `https://github.com/Diabl0570/hassio-addons#stable`.
 3. Install the app you need and follow its documentation.
 
-The `stable` branch advances after CLIProxyAPI's image build, smoke test, retry check, anonymous image-pull check, and Obot's startup and persistence check pass. Obot builds its wrapper locally from the pinned official image. CLIProxyAPI uses its existing public GHCR package.
+The `stable` branch advances after CLIProxyAPI's image build, smoke test, retry check, anonymous image-pull check, and the startup and persistence checks of Obot and MCPHub pass. Obot and MCPHub build their wrappers locally from pinned official images. CLIProxyAPI uses its existing public GHCR package.
 
 If you already installed CLIProxyAPI, keep `https://github.com/Diabl0570/home-assistant-app-cliproxyapi#stable` in your Home Assistant repositories. GitHub redirects that URL to this repository after the rename. Keeping the configured URL preserves Home Assistant's app identity, options, and private data, so you can update the existing installation in place. Back up the app before updating. Adding the new URL alongside the old one creates a separate app with separate private data.
 
@@ -35,11 +36,17 @@ The [starter Jira skill](skills/jira-write-ticket/SKILL.md) binds to `createJira
 
 Tool descriptions provide instructions before a call. Use an Obot request filter for rules that must reject a write. Changing the skill requires rendering and applying the descriptions again. The app does not synchronize them automatically.
 
+## Configure MCPHub
+
+Start the app and open **Web UI**. Log in as `admin` with the password that the first start writes to the app log, then change it. Add your MCP servers, and create one key per agent under **Settings → Keys**. Agents use `http://HOME_ASSISTANT_IP:8190/mcp` with their key as a bearer token.
+
+MCPHub needs no Docker access, so Protection mode stays on. The app turns MCP key checks and dashboard login back on at every start. See [MCPHub documentation](mcphub/DOCS.md) for groups, tool access policies, and backups.
+
 ## Maintain app releases
 
 The daily updater proposes CLIProxyAPI v8 and CPA Manager Plus v1 updates in separate pull requests. It explicitly dispatches `build.yaml` for each update branch. Review the build before merging. New major releases and incompatible CPA Manager Plus releases require a manual review.
 
-CLIProxyAPI image tags are immutable. Bump the app version suffix when its app folder changes. Changes confined to Obot, shared skills, or collection documentation reuse the existing CLIProxyAPI image after its source tree and container checks pass. The image name remains `ghcr.io/diabl0570/home-assistant-app-cliproxyapi-amd64` so existing installations can keep using the same public package. Obot's upstream and wrapper versions remain pinned in its manifest and Dockerfile.
+CLIProxyAPI image tags are immutable. Bump the app version suffix when its app folder changes. Changes confined to Obot, MCPHub, shared skills, or collection documentation reuse the existing CLIProxyAPI image after its source tree and container checks pass. The image name remains `ghcr.io/diabl0570/home-assistant-app-cliproxyapi-amd64` so existing installations can keep using the same public package. The upstream and wrapper versions of Obot and MCPHub remain pinned in their manifests and Dockerfiles. MCPHub's base image is pinned by digest; update it by hand.
 
 The separate diagnostics compatibility job reports whether the pinned CPA Manager Plus interface still works. It does not block image publication. Diagnostics stays separate from the proxy at runtime. See [the compatibility contract](cliproxyapi/DOCS.md#updates-and-diagnostics-compatibility).
 
@@ -49,6 +56,7 @@ The separate diagnostics compatibility job reports whether the pinned CPA Manage
 python3 -m pip install PyYAML==6.0.3
 python3 -m unittest discover -s cliproxyapi/tests -v
 python3 -m unittest discover -s obot/tests -v
+python3 -m unittest discover -s mcphub/tests -v
 python3 -m unittest discover -s tests -v
 bash -n obot/run.sh
 ```
@@ -62,8 +70,10 @@ python3 scripts/retry_check.py
 python3 scripts/diagnostics_compat.py
 docker build --platform linux/amd64 --tag ha-obot:test obot
 python3 scripts/obot-smoke.py --image ha-obot:test
+docker build --platform linux/amd64 --tag ha-mcphub:test mcphub
+python3 scripts/mcphub-smoke.py --image ha-mcphub:test
 ```
 
-These checks do not use your Home Assistant, Jira, or provider accounts. Test installation and account preservation on the target Home Assistant device after migration.
+These checks do not use your Home Assistant, Jira, or provider accounts. The MCPHub check uses host port 8190. Test installation and account preservation on the target Home Assistant device after migration.
 
 The wrapper code and starter skill use the MIT license. Upstream images and bundled releases retain their own licenses and notices.

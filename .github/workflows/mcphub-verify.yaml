@@ -1,0 +1,28 @@
+name: Verify MCPHub
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout (v7.0.1)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Set up Python (v7.0.0)
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Install schema test dependency
+        run: python3 -m pip install PyYAML==6.0.3
+      - name: Test app startup wrapper
+        run: python3 -m unittest discover -s mcphub/tests -v
+      - name: Build amd64 app image
+        run: docker build --platform linux/amd64 --tag ha-mcphub:test mcphub
+      - name: Verify authentication, stdio tools and restart persistence
+        run: python3 scripts/mcphub-smoke.py --image ha-mcphub:test

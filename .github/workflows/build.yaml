@@ -12,8 +12,10 @@ concurrency:
 jobs:
   obot:
     uses: ./.github/workflows/obot-verify.yaml
+  mcphub:
+    uses: ./.github/workflows/mcphub-verify.yaml
   amd64:
-    needs: obot
+    needs: [obot, mcphub]
     runs-on: ubuntu-latest
     permissions:
       contents: write

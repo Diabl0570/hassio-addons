@@ -1,0 +1,23 @@
+name: MCPHub
+version: "1.2.3-1"
+slug: mcphub
+url: https://github.com/Diabl0570/hassio-addons/tree/stable/mcphub
+description: One authenticated MCP endpoint with tool groups and per-key access
+arch:
+  - amd64
+startup: application
+boot: auto
+# Docker's init reaps the stdio MCP servers that MCPHub starts and stops.
+init: true
+stage: experimental
+ingress: false
+timeout: 30
+ports:
+  3000/tcp: 8190
+ports_description:
+  3000/tcp: MCPHub dashboard and MCP endpoints
+webui: "http://[HOST]:[PORT:3000]"
+options:
+  tool_call_guard: false
+schema:
+  tool_call_guard: bool
