@@ -1,0 +1,24 @@
+name: Donna, Ollie & Ava
+version: "1.0.0"
+slug: family_stories
+description: Read and create family stories through Home Assistant ingress
+url: https://github.com/Diabl0570/hassio-addons/tree/stable/family_stories
+arch:
+  - amd64
+  - aarch64
+startup: application
+boot: auto
+init: false
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:book-open-page-variant
+panel_title: Donna, Ollie & Ava
+panel_admin: false
+options:
+  target_url: https://verhalen.xijezo.nl
+  username: familie
+  password: ""
+schema:
+  target_url: url
+  username: str
+  password: password

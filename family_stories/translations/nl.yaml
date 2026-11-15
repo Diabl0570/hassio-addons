@@ -1,0 +1,10 @@
+configuration:
+  target_url:
+    name: Verhalenserver
+    description: Publiek HTTPS-adres van de bestaande verhalenserver, zonder pad.
+  username:
+    name: Gebruikersnaam
+    description: Gebruikersnaam van de verhalenserver.
+  password:
+    name: Wachtwoord
+    description: Wachtwoord van de verhalenserver. Dit blijft binnen de app.

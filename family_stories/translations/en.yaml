@@ -1,0 +1,10 @@
+configuration:
+  target_url:
+    name: Story server
+    description: Public HTTPS origin of the existing story server, without a path.
+  username:
+    name: Username
+    description: Username for the story server.
+  password:
+    name: Password
+    description: Password for the story server. It stays inside the app.
