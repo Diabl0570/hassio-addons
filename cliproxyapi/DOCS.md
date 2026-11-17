@@ -156,7 +156,7 @@ A new OAuth account is covered as soon as it is added, because its provider's li
 CLIProxyAPI 8.0.10 has no exclusion setting for these paths, so the block cannot cover them:
 
 - An `openai-compatibility` provider serves the models you list for it. Do not list a blocked model there.
-- An OAuth model alias (`oauth.model-alias`) you name after a blocked model, such as `{name: gpt-6.1-sol, alias: gpt-6-sol}`, appears in `/v1/models` under that name. It serves the model it aliases (here the latest Sol), not the blocked one.
+- An OAuth model alias (`oauth.model-alias`) you name after a blocked model, such as `{name: gpt-6.1-sol, alias: gpt-6-sol}`, appears in `/v1/models` under that name. It serves the model it aliases (here the model named in `name`), not the blocked one.
 - An OAuth model alias whose target is a blocked model, in `oauth.model-alias` or in an account's auth file, can still send requests to the blocked model. For example, `{name: gpt-6-sol, alias: gpt-6.1-sol}` sends requests for `gpt-6.1-sol` to GPT-6 Sol. Remove every alias that targets a blocked model.
 - Models added by a CLIProxyAPI plugin are not filtered.
 
