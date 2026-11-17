@@ -135,7 +135,7 @@ Every build runs `scripts/retry_check.py` against a fake provider with synthetic
 
 ## Blocked models
 
-`blocked_models` lists the model IDs the proxy hides and refuses. By default it blocks GPT-6 Sol and GPT-5.6 Sol: `gpt-6-sol` and `gpt-5.6-sol` from Codex, and `devin/gpt-6-sol` and `devin/gpt-5-6-sol` from Devin. Of the Sol models, only `gpt-6.1-sol` stays available. A blocked model is missing from `/v1/models`, also under any credential prefix. A request naming it gets `400 model_not_found` without reaching any account. Other models keep working. The paths listed at the end of this section are not covered.
+`blocked_models` lists the model IDs the proxy hides and refuses. By default it blocks GPT-6 Sol and GPT-5.6 Sol: `gpt-6-sol` and `gpt-5.6-sol` from Codex, and `devin/gpt-6-sol` and `devin/gpt-5-6-sol` from Devin (the default list is `blocked_models` in `cliproxyapi/config.yaml`). Every other Sol model, including the latest, stays available. A blocked model is missing from `/v1/models`, also under any credential prefix. A request naming it gets `400 model_not_found` without reaching any account. Other models keep working. The paths listed at the end of this section are not covered.
 
 To change the list, open the app in Home Assistant, go to the **Configuration** tab, add or remove model IDs under `blocked_models`, select **Save**, then restart the app. Each entry is one exact model ID, compared case-insensitively. `*` is not allowed. Remove every entry to block nothing.
 
@@ -156,7 +156,7 @@ A new OAuth account is covered as soon as it is added, because its provider's li
 CLIProxyAPI 8.0.10 has no exclusion setting for these paths, so the block cannot cover them:
 
 - An `openai-compatibility` provider serves the models you list for it. Do not list a blocked model there.
-- An OAuth model alias (`oauth.model-alias`) you name after a blocked model, such as `{name: gpt-6.1-sol, alias: gpt-6-sol}`, appears in `/v1/models` under that name. It serves the model it aliases (here GPT-6.1 Sol), not the blocked one.
+- An OAuth model alias (`oauth.model-alias`) you name after a blocked model, such as `{name: gpt-6.1-sol, alias: gpt-6-sol}`, appears in `/v1/models` under that name. It serves the model it aliases (here the latest Sol), not the blocked one.
 - An OAuth model alias whose target is a blocked model, in `oauth.model-alias` or in an account's auth file, can still send requests to the blocked model. For example, `{name: gpt-6-sol, alias: gpt-6.1-sol}` sends requests for `gpt-6.1-sol` to GPT-6 Sol. Remove every alias that targets a blocked model.
 - Models added by a CLIProxyAPI plugin are not filtered.
 
