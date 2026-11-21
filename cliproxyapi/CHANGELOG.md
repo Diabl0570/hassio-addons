@@ -1,3 +1,7 @@
+# 8.0.80-1
+
+- Update CLIProxyAPI to 8.0.80; upstream checksum pinned.
+
 # 8.0.76-1
 
 - Update CLIProxyAPI to 8.0.76; upstream checksum pinned.
